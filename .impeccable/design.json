@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-07T14:45:11+00:00",
+  "generatedAt": "2026-11-07T18:00:00+00:00",
   "title": "Design System: Steady",
   "extensions": {
     "colorMeta": {
@@ -165,12 +165,33 @@
       "muted-on-blue": {
         "role": "neutral",
         "displayName": "Muted on Pale Blue"
+      },
+      "steel-shade": {
+        "role": "neutral",
+        "displayName": "Staple Shade"
+      },
+      "screen": {
+        "role": "neutral",
+        "displayName": "Screen Black"
+      },
+      "app-plate": {
+        "role": "borrowed",
+        "displayName": "App Plate Red (borrowed from the app)"
+      },
+      "app-white": {
+        "role": "borrowed",
+        "displayName": "App White (borrowed from the app)"
+      },
+      "selection-text": {
+        "role": "neutral",
+        "displayName": "Selection White",
+        "purpose": "Text on the marker selection highlight only."
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "H1 on the lead card and closing wordmark."
+        "purpose": "H1 on the lead card."
       },
       "headline": {
         "displayName": "Headline",
@@ -186,7 +207,7 @@
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Printed field labels, legends, column heads; uppercase. Never a kicker."
+        "purpose": "Printed field labels, legends, column heads, form footers; uppercase. Never a kicker."
       },
       "hand": {
         "displayName": "Hand",
@@ -199,6 +220,34 @@
       "note": {
         "displayName": "Note",
         "purpose": "Short handwritten aside under a control."
+      },
+      "label-grid": {
+        "displayName": "Label Grid",
+        "purpose": "Column heads inside grids."
+      },
+      "row-head": {
+        "displayName": "Row Head",
+        "purpose": "Exercise names heading a grid row; phone body size."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Small print under grids and in the notch table."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Figure captions and image credits."
+      },
+      "stamp": {
+        "displayName": "Stamp",
+        "purpose": "Rubber stamps only."
+      },
+      "hand-aside": {
+        "displayName": "Hand Aside",
+        "purpose": "Written line under a large value; ruled fields."
+      },
+      "display-closing": {
+        "displayName": "Display Closing",
+        "purpose": "Closing card wordmark."
       }
     },
     "shadows": [],
@@ -207,23 +256,78 @@
         "name": "card-overlap",
         "value": "margin-top: -18px (phones -12px); alternate inset clamp(0px, 6vw, 96px) (phones 10px)",
         "purpose": "The only depth: each card covers the edge of the previous one."
+      },
+      {
+        "name": "card-settle",
+        "value": "translate 0 48px to 0, animation-timeline view(), range entry 0% to entry 55%, inside @supports",
+        "purpose": "Cards rise into their overlapping place on scroll."
       }
     ],
     "motion": [
       {
         "name": "ease-ink",
         "value": "cubic-bezier(.16, 1, .3, 1)",
-        "purpose": "Ink writing in."
+        "purpose": "Ink writing in, plates sliding on, stamps landing."
+      },
+      {
+        "name": "ease-trace",
+        "value": "cubic-bezier(.65, 0, .35, 1)",
+        "purpose": "Traced loops, strikes and drawn lines."
+      },
+      {
+        "name": "ease-plate-out",
+        "value": "cubic-bezier(.7, 0, .84, 0)",
+        "purpose": "Plates sliding off the sleeve."
+      },
+      {
+        "name": "intro",
+        "value": "ticks clip 350ms at 150ms + 110ms each; rows from 600ms at 110ms per row + 45ms per cell; loops from 1000ms; class removed at 2600ms",
+        "purpose": "Arrival: ticks trace, then the grid writes row by row."
       },
       {
         "name": "write-row",
-        "value": "clip-path inset(0 100% 0 0) to inset(0) 700ms, 70ms stagger",
+        "value": "clip-path inset(-12px 100% -12px -12px) to inset(-12px) 700ms, 70ms per row, 45ms per cell",
         "purpose": "Changed grid rows write in left to right."
+      },
+      {
+        "name": "hand-loop",
+        "value": "stroke-dashoffset 1 to 0 over 600ms, pathLength 1, row delay + 380ms",
+        "purpose": "Change-red loop traced around a progressing value."
       },
       {
         "name": "tick-draw",
         "value": "clip-path 280ms",
         "purpose": "Marker tick drawn in."
+      },
+      {
+        "name": "plate-slide",
+        "value": "translateX(±70px) + opacity, in 450ms ease-ink, out 300ms ease-plate-out",
+        "purpose": "Plates slide on and off the sleeve on + / −."
+      },
+      {
+        "name": "strike-rewrite",
+        "value": "3px change-red line scaleX 0 to 1 from left, 350ms ease-trace; row rewritten after 520ms",
+        "purpose": "A refused notch struck through, then rewritten."
+      },
+      {
+        "name": "stamp",
+        "value": "opacity 0 + rotate(-7deg) scale(1.15) to rotate(-7deg) scale(1), 400ms ease-ink; closing stamp +300ms on view",
+        "purpose": "Rubber stamp lands."
+      },
+      {
+        "name": "ink-on-view",
+        "value": "[data-in].in .ink stroke-dashoffset 1 to 0, 1.4s ease-trace, per-path --d delay, IntersectionObserver threshold .4",
+        "purpose": "Drawn lines trace once on view."
+      },
+      {
+        "name": "typing",
+        "value": "one letter every 40ms after 200ms, on view",
+        "purpose": "TV address written letter by letter."
+      },
+      {
+        "name": "tv-clock",
+        "value": "arc stroke-dashoffset 1s linear, one tick per second, at most 5 ticks per viewing (threshold .5), never loops",
+        "purpose": "Live rest clock over the TV capture."
       },
       {
         "name": "row-hold",
@@ -232,8 +336,8 @@
       },
       {
         "name": "reduced-motion",
-        "value": "animation and transition none",
-        "purpose": "All motion stops under prefers-reduced-motion."
+        "value": "html.motion set only without prefers-reduced-motion; animation and transition none under reduce",
+        "purpose": "All motion gated and off under reduced motion."
       }
     ],
     "breakpoints": [
@@ -300,14 +404,37 @@
       "name": "Stapled Photo",
       "kind": "custom",
       "refersTo": "phone-shot",
-      "description": "App screen stapled flat onto a card.",
+      "description": "App screen stapled flat onto a card; wide captures take two staples.",
       "html": "<div class=\"ds-shot\"><div class=\"ds-screen\"></div></div>",
       "css": ":host{--rack:#1c1c1e;--orange:#f3a26e;--white:#eef0f2;--blue:#a9cbe8;--ink:#141414;--marker:#1b3aa8;--change:#8a0f0a;--steel:#8b8f96;--print:\"Archivo\",\"Arial Narrow\",sans-serif;--hand:\"Kalam\",\"Bradley Hand\",cursive} .ds-shot{position:relative;width:160px;padding-top:12px} .ds-shot::before{content:\"\";position:absolute;z-index:2;top:6px;left:50%;width:46px;height:7px;margin-left:-23px;background:linear-gradient(var(--steel) 60%,#6c7077 0);border-radius:2px} .ds-screen{aspect-ratio:694/1500;border-radius:26px;outline:2px solid var(--ink);outline-offset:-1px;background:#000}"
+    },
+    {
+      "name": "Rubber Stamp",
+      "kind": "custom",
+      "refersTo": "stamp",
+      "description": "Tilted stamp: change red for a lightened session, ink on the closing card.",
+      "html": "<p class=\"ds-v\">Séance allégée.<span class=\"ds-stamp\">Allégée</span></p>",
+      "css": ":host{--rack:#1c1c1e;--orange:#f3a26e;--white:#eef0f2;--blue:#a9cbe8;--ink:#141414;--marker:#1b3aa8;--change:#8a0f0a;--steel:#8b8f96;--print:\"Archivo\",\"Arial Narrow\",sans-serif;--hand:\"Kalam\",\"Bradley Hand\",cursive} .ds-v{display:flex;align-items:center;gap:24px;background:var(--orange);padding:24px;font:700 1.75rem/1.2 var(--hand);color:var(--change)} .ds-stamp{display:inline-block;font:800 1.375rem/1 var(--print);font-stretch:75%;letter-spacing:.06em;text-transform:uppercase;color:var(--change);border:3px solid currentColor;padding:7px 12px 5px;transform:rotate(-7deg);animation:ds-stamp .4s cubic-bezier(.16,1,.3,1) both} @keyframes ds-stamp{from{opacity:0;transform:rotate(-7deg) scale(1.15)}to{opacity:1;transform:rotate(-7deg) scale(1)}} @media (prefers-reduced-motion:reduce){.ds-stamp{animation:none}}"
+    },
+    {
+      "name": "Form Footer",
+      "kind": "custom",
+      "refersTo": "form-foot",
+      "description": "Printed form footer closing every feature card.",
+      "html": "<p class=\"ds-foot\"><span>Carnet de progression</span><span>Exercice <b>squat à la Smith</b></span><span>Fourchette <b>8 à 10 rép.</b></span></p>",
+      "css": ":host{--rack:#1c1c1e;--orange:#f3a26e;--white:#eef0f2;--blue:#a9cbe8;--ink:#141414;--marker:#1b3aa8;--change:#8a0f0a;--steel:#8b8f96;--print:\"Archivo\",\"Arial Narrow\",sans-serif;--hand:\"Kalam\",\"Bradley Hand\",cursive} .ds-foot{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 24px;margin:0;padding:12px 16px 16px;border-top:2px solid var(--ink);background:var(--blue);color:var(--ink);font:700 .8125rem/1.2 var(--print);font-stretch:80%;letter-spacing:.08em;text-transform:uppercase} .ds-foot>span:first-child{font-weight:800} .ds-foot span{display:inline-flex;align-items:baseline;gap:8px} .ds-foot b{font:700 1.125rem var(--hand);color:var(--marker);letter-spacing:0;text-transform:none;border-bottom:1px solid var(--ink);padding:0 8px}"
+    },
+    {
+      "name": "Marker Chart",
+      "kind": "custom",
+      "description": "Progress curve in marker on a printed grid, record circled in change red; traces on view.",
+      "html": "<svg class=\"ds-curve\" viewBox=\"0 0 360 190\"><line class=\"g\" x1=\"40\" x2=\"340\" y1=\"125\" y2=\"125\"/><line class=\"g\" x1=\"40\" x2=\"340\" y1=\"55\" y2=\"55\"/><text class=\"ax\" x=\"32\" y=\"129\" text-anchor=\"end\">40</text><text class=\"ax\" x=\"32\" y=\"59\" text-anchor=\"end\">50</text><path class=\"ink\" pathLength=\"1\" d=\"M40 132L125.7 97L211.4 79.5L340 44.5\"/><path class=\"ink rec\" pathLength=\"1\" d=\"M344 29.5C362 30.5 366 46.5 358 55.5C348 63.5 326 61.5 319 50.5C314 39.5 326 28.5 341 28.5C350 28.5 355 31.5 358 34.5\"/><text class=\"r\" x=\"310\" y=\"22.5\" text-anchor=\"end\">Record</text></svg>",
+      "css": ":host{--rack:#1c1c1e;--orange:#f3a26e;--white:#eef0f2;--blue:#a9cbe8;--ink:#141414;--marker:#1b3aa8;--change:#8a0f0a;--steel:#8b8f96;--print:\"Archivo\",\"Arial Narrow\",sans-serif;--hand:\"Kalam\",\"Bradley Hand\",cursive} .ds-curve{width:320px;background:var(--white);overflow:visible} .ds-curve .g{stroke:var(--ink);stroke-opacity:.3;stroke-width:1} .ds-curve .ax{fill:#4b4f55;font:700 11px var(--print);font-stretch:80%;letter-spacing:.06em} .ds-curve .ink{fill:none;stroke:var(--marker);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;animation:ds-trace 1.4s cubic-bezier(.65,0,.35,1) both} .ds-curve .rec{stroke:var(--change);stroke-width:2.4;animation-delay:1.3s} .ds-curve .r{fill:var(--change);font:700 16px var(--hand)} @keyframes ds-trace{from{stroke-dashoffset:1}to{stroke-dashoffset:0}} @media (prefers-reduced-motion:reduce){.ds-curve .ink{animation:none}}"
     }
   ],
   "narrative": {
     "northStar": "La fiche d'entraînement",
-    "overview": "Every surface is a printed gym workout card, filled in by hand, filed in a charcoal card rack. The card stock carries everything: a black printed grid, condensed printed headings and field labels, and entries written in blue marker. The page does not decorate the card; it is the card. Content that the program writes (loads, reps, verdicts, ticks) is handwritten; the frame that holds it (headings, column heads, labels, rules) is printed.\n\nThe system is flat and dense like a real form: hard 1.5 to 2px black rules, square corners, generous card padding, and no shading of any kind. Depth exists only because one card physically overlaps the edge of the previous one. Colour is rationed: the stocks are pale and quiet, the ink is black, the marker is blue, and a single dark red is reserved for whatever progresses.\n\nMotion is ink, not interface: entries write themselves in from left to right, ticks are drawn rather than toggled, and one row is held at a time while the rest dim. Nothing floats, slides or bounces. All motion stops under `prefers-reduced-motion`.",
+    "overview": "Every surface is a printed gym workout card, filled in by hand, filed in a charcoal card rack. The card stock carries everything: a black printed grid, condensed printed headings and field labels, and entries written in blue marker. The page does not decorate the card; it is the card. Content that the program writes (loads, reps, verdicts, ticks) is handwritten; the frame that holds it (headings, column heads, labels, rules) is printed.\n\nThe system is flat and dense like a real form: hard 1.5 to 2px black rules, square corners, generous card padding, and no shading of any kind. Depth exists only because one card physically overlaps the edge of the previous one. Colour is rationed: the stocks are pale and quiet, the ink is black, the marker is blue, and a single dark red is reserved for whatever progresses.\n\nMotion is ink and paper, not interface. Ink writes: on arrival the ticks are traced, then the grid writes itself row by row; changed entries write in from left to right, a progressing value is circled by a hand loop, a refused notch is struck through then rewritten, the TV address is written letter by letter, and drawn lines (chart, padlock) trace themselves when they come into view. Objects move the way they would on the bench: plates slide on and off the sleeve, a rubber stamp lands, cards settle onto the stack as they scroll in, and the TV capture's rest clock ticks for five seconds per viewing and stops. One row is held at a time while the rest dim. Nothing floats, bounces or loops. All motion sits behind a `motion` class set only when `prefers-reduced-motion` does not ask for less, and every animation and transition is off under reduced motion.",
     "keyCharacteristics": [
       "Charcoal rack ground with square card stocks in orange, bristol white and pale blue, stacked by overlap.",
       "Two hands: condensed Archivo for everything printed, Kalam marker for everything written.",
@@ -333,7 +460,7 @@
       },
       {
         "name": "The Field Label Rule",
-        "body": "Uppercase printed labels name a field, a box or a column, the way a printed form does. They never sit above a headline as a kicker.",
+        "body": "Uppercase printed labels name a field, a box or a column, the way a printed form does. They never sit above a headline as a kicker; the printed form footer that names each card closes the card at the bottom.",
         "section": "typography"
       },
       {
@@ -349,7 +476,9 @@
       "Do show what cannot be done as a barred empty cell, not as a disabled grey control or a hidden row.",
       "Do keep borders black and square: 1.5px for grid lines, 2px for boxes and controls.",
       "Do use each stock's own muted ink for small print on that stock.",
-      "Do keep motion to ink writing in (left-to-right clip) and row holding; disable it under reduced motion."
+      "Do keep motion to ink (clip write-in, traced loops, strikes and lines, letter-by-letter writing), physical objects (plates on the sleeve, stamps landing, cards settling 48px onto the stack, a clock ticking at most 5 s per viewing) and row holding; gate it behind the motion class and disable it under reduced motion.",
+      "Do close every feature card with its printed form footer.",
+      "Do credit third-party images and their licence in the caption."
     ],
     "donts": [
       "Don't add box-shadows, blur, glows or shading gradients; hard-stop gradients are only for drawing lines (bars, staples).",
@@ -357,7 +486,9 @@
       "Don't use Progress Red, or any extra hue, for emphasis, headings, links or buttons.",
       "Don't put an uppercase printed label above a headline as a kicker; printed caps label fields only.",
       "Don't set headings in Kalam or values in Archivo.",
-      "Don't tilt or float product screens in a device mockup; they are stapled flat onto a card."
+      "Don't tilt or float product screens in a device mockup; they are stapled flat onto a card.",
+      "Don't loop, float or bounce anything; every motion plays once per trigger and stops.",
+      "Don't use the borrowed app colours (app plate red, app white) outside the app mark and the TV capture overlay."
     ]
   }
 }
