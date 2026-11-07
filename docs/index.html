@@ -180,6 +180,9 @@
   .shots.pair .shot { width: min(48%, 280px); }
   .shots.pair .shot + .shot { margin-left: -6%; margin-top: 72px; }
   figcaption { margin-top: var(--s3); font-size: .875rem; color: var(--muted); text-align: center; }
+  figcaption a { color: inherit; text-underline-offset: 3px; }
+  .shots { flex-wrap: wrap; }
+  .shots figcaption { flex-basis: 100%; }
 
   /* Écran projeté */
   .tv { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: var(--s6) clamp(32px, 6vw, 96px); align-items: start; }
@@ -421,6 +424,7 @@
     </ul>
     <figure class="screen">
       <div class="shot wide"><img src="img/tv.webp" width="1920" height="1080" loading="lazy" alt="Écran projeté de Steady sur une télé : Squat à la Smith, images du mouvement et muscles travaillés, consignes, chrono de repos à 1:04, prochaine série 8 à 10 répétitions à 51,5 kg, de chaque côté 10 + 5 + 1,25 kg, série précédente marquée Record, exercice suivant."></div>
+      <figcaption>Image du squat : Tierrasverdes, <a href="https://wger.de">wger</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr">CC BY-SA 4.0</a>. Schémas des muscles : <a href="https://wger.de">wger</a>, d'après <a href="https://commons.wikimedia.org/wiki/File:Muscular_system.svg">Wikimedia Commons</a>.</figcaption>
     </figure>
   </section>
 
@@ -439,6 +443,7 @@
     <figure class="shots pair">
       <div class="shot"><img src="img/progres.webp" width="694" height="1500" loading="lazy" alt="Écran Progrès : bilan de la semaine, records, charges en hausse et alerte d'équilibre poussée et tirage."></div>
       <div class="shot"><img src="img/semaine.webp" width="694" height="1500" loading="lazy" alt="Écran Ma semaine : séances de la semaine et carte de récupération des muscles."></div>
+      <figcaption>Schémas des muscles : <a href="https://wger.de">wger</a>, d'après <a href="https://commons.wikimedia.org/wiki/File:Muscular_system.svg">Wikimedia Commons</a>.</figcaption>
     </figure>
   </section>
 
