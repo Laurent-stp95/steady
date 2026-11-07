@@ -1,0 +1,6 @@
+.impeccable/review/
+.impeccable/raw/
+.impeccable/decision.json
+.DS_Store
+.impeccable/brief.md
+.impeccable/hook.cache.json

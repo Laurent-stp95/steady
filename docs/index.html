@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Steady · Progresse sans te blesser</title>
+<meta name="description" content="Steady construit ton programme de musculation à partir du matériel que tu as chez toi, puis le fait progresser prudemment : la technique avant la charge. Appli pour iPhone.">
+<meta name="theme-color" content="#1c1c1e">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/kalam-700.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:title" content="Steady · Progresse sans te blesser">
+<meta property="og:description" content="Le programme de musculation qui s'écrit avec ton matériel.">
+<style>
+  @font-face { font-family: "Archivo"; src: url(fonts/archivo.woff2) format("woff2"); font-weight: 400 900; font-stretch: 62% 125%; font-display: swap; }
+  @font-face { font-family: "Kalam"; src: url(fonts/kalam-400.woff2) format("woff2"); font-weight: 400; font-display: swap; }
+  @font-face { font-family: "Kalam"; src: url(fonts/kalam-700.woff2) format("woff2"); font-weight: 700; font-display: swap; }
+
+  :root {
+    /* Le mur du casier (fond de l'icône) et les cartons qui y sont rangés */
+    --rack: #1c1c1e; --rack-ink: #c9c6c0;
+    --orange: #f3a26e; --white: #eef0f2; --blue: #a9cbe8;
+    --ink: #141414; --ink-soft: #3a3633;
+    --marker: #1b3aa8;   /* écriture au marqueur */
+    --change: #8a0f0a;   /* seule couleur vive : ce qui progresse */
+    --steel: #8b8f96;
+    --print: "Archivo", "Arial Narrow", sans-serif;
+    --hand: "Kalam", "Bradley Hand", cursive;
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+    --gutter: clamp(16px, 4vw, 48px);
+    --hole: 18px;
+    color-scheme: dark;
+    scrollbar-color: #4a4a4e var(--rack);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--rack); color: var(--ink); font: 400 1.0625rem/1.5 var(--print); font-stretch: 92%; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p, ul, ol, figure, fieldset, table { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  ::selection { background: var(--marker); color: #fff; }
+  :focus-visible { outline: 3px solid var(--marker); outline-offset: 3px; border-radius: 2px; }
+  button, input { font: inherit; color: inherit; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* ---------- Les cartons ---------- */
+  main { padding: var(--gutter) var(--gutter) 0; max-width: 1360px; margin: 0 auto; }
+  .card { position: relative; padding: clamp(24px, 4vw, 56px); padding-top: clamp(40px, 5vw, 64px); }
+  .card::before { /* trou de rangement perforé */
+    content: ""; position: absolute; top: 14px; left: 50%; width: var(--hole); height: var(--hole); margin-left: calc(var(--hole) / -2);
+    border-radius: 50%; background: var(--rack);
+  }
+  .orange { background: var(--orange); --muted: #4a2a17; }
+  .white  { background: var(--white);  --muted: #4b4f55; }
+  .blue   { background: var(--blue);   --muted: #213a52; }
+  /* Profondeur par superposition seulement : chaque carton recouvre le bord du précédent */
+  .stack > .card + .card { margin-top: -18px; }
+  .stack > .card:nth-child(odd)  { margin-right: clamp(0px, 6vw, 96px); }
+  .stack > .card:nth-child(even) { margin-left: clamp(0px, 6vw, 96px); }
+  .stack > .card.hero { margin: 0; }
+
+  h1, h2 { font-family: var(--print); font-weight: 800; font-stretch: 68%; line-height: .95; letter-spacing: -.01em; text-wrap: balance; }
+  h1 { font-size: clamp(3.25rem, 8.4vw, 6rem); }
+  h2 { font-size: clamp(2.25rem, 5vw, 3.75rem); }
+  .lead { font-size: clamp(1.125rem, 1.6vw, 1.3rem); line-height: 1.45; max-width: 36em; color: var(--ink-soft); }
+  .printed { font: 700 .8125rem/1.2 var(--print); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; }
+  .hand { font-family: var(--hand); font-weight: 700; color: var(--marker); }
+  .note { font-family: var(--hand); color: var(--marker); font-size: 1.125rem; line-height: 1.35; }
+
+  /* ---------- En-tête de la fiche ---------- */
+  .head { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); padding-bottom: var(--s4); border-bottom: 2px solid var(--ink); margin-bottom: clamp(24px, 4vw, 40px); }
+  .brand { display: flex; align-items: center; gap: var(--s3); font: 800 1.5rem/1 var(--print); font-stretch: 75%; letter-spacing: .01em; }
+  .brand svg { width: 44px; height: 44px; border-radius: 10px; flex: none; }
+  .fields { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); justify-content: flex-end; }
+  .fields span { display: inline-flex; align-items: baseline; gap: var(--s2); }
+  .fields b { font-family: var(--hand); font-weight: 700; color: var(--marker); font-size: 1.125rem; letter-spacing: 0; text-transform: none; border-bottom: 1px solid var(--ink); padding: 0 var(--s2); }
+
+  /* ---------- Première carte : la fiche qui s'écrit ---------- */
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); gap: var(--s5) clamp(32px, 5vw, 72px); }
+  .hero .head { grid-column: 1 / -1; margin-bottom: 0; }
+  .hero-text { display: flex; flex-direction: column; gap: var(--s4); }
+  .gear { grid-column: 2; grid-row: 2 / span 2; align-self: start; border: 2px solid var(--ink); padding: var(--s4) var(--s4) var(--s5); }
+  .sheet { grid-column: 1; }
+
+  .gear, .check fieldset { min-inline-size: 0; }
+  .gear legend { padding: 0 var(--s2); margin-left: calc(var(--s2) * -1); }
+  .gear ul { display: grid; gap: var(--s1); margin-top: var(--s2); }
+  .tick { display: flex; align-items: center; gap: var(--s3); min-height: 48px; cursor: pointer; font-weight: 600; font-size: 1.0625rem; }
+  .tick input { appearance: none; margin: 0; width: 28px; height: 28px; flex: none; border: 2px solid var(--ink); background: transparent; cursor: pointer; display: grid; place-items: center; }
+  .tick input::after { /* coche au marqueur */
+    content: ""; width: 22px; height: 22px; background: var(--marker);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 13.5c2.2 1.6 3.9 3.6 5.4 6.2C11.3 12.6 15.7 7 21.5 2.8' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 13.5c2.2 1.6 3.9 3.6 5.4 6.2C11.3 12.6 15.7 7 21.5 2.8' fill='none' stroke='%23000' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+    clip-path: inset(0 100% 0 0); transition: clip-path .28s cubic-bezier(.16, 1, .3, 1);
+  }
+  .tick input:checked::after { clip-path: inset(0 0 0 0); }
+  .tick:hover input { background: rgb(255 255 255 / .25); }
+  .gear .note { margin-top: var(--s3); }
+
+  /* La grille imprimée */
+  .sheet table { width: 100%; border-collapse: collapse; }
+  .sheet th, .sheet td { border: 1.5px solid var(--ink); padding: var(--s2) var(--s3); text-align: left; vertical-align: middle; }
+  .sheet thead th { font: 700 .75rem/1.15 var(--print); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; padding-block: var(--s2); }
+  .sheet thead th small { display: block; font-weight: 500; letter-spacing: .04em; text-transform: none; font-size: .75rem; color: var(--muted); }
+  .sheet tbody th { font-weight: 600; font-size: 1rem; line-height: 1.2; width: 34%; }
+  .sheet tbody th small { display: block; font: 600 .6875rem/1.3 var(--print); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .sheet td { font: 700 1.1875rem/1.1 var(--hand); color: var(--marker); white-space: nowrap; }
+  .sheet td.up { color: var(--change); }
+  .sheet td.up span { display: inline-block; padding: 0 .3em; border: 2px solid var(--change); border-radius: 50% 46% 52% 44% / 56% 50% 48% 52%; }
+  .sheet tr.none td { background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ink) calc(50% - .5px), var(--ink) calc(50% + .5px), transparent calc(50% + 1px)); }
+  .sheet tr.none th { color: var(--muted); }
+  .sheet tbody tr { transition: opacity .2s; }
+  .sheet tbody:hover tr:not(:hover), .sheet tbody:has(:focus-visible) tr:not(:focus-within) { opacity: .4; } /* une ligne tenue à la fois */
+  .write > * { animation: write .7s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--i, 0) * 70ms); }
+  @keyframes write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  .sheet-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2) var(--s5); margin-top: var(--s3); font-size: .9375rem; color: var(--muted); }
+  .legend-up { color: var(--change); font-family: var(--hand); font-weight: 700; }
+
+  /* ---------- Cartes de fonctionnalités ---------- */
+  .feature { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--s6) clamp(32px, 6vw, 96px); align-items: start; }
+  .feature.flip { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
+  .feature.flip > :first-child { order: 2; }
+  .copy { display: flex; flex-direction: column; gap: var(--s4); }
+  .copy p { max-width: 34em; }
+  .rules { display: grid; gap: var(--s3); margin-top: var(--s2); }
+  .rules li { display: grid; grid-template-columns: 28px 1fr; gap: var(--s3); align-items: start; }
+  .rules li::before { content: ""; width: 16px; height: 4px; margin-top: .6em; background: var(--ink); }
+  .rules b { font-weight: 700; }
+
+  /* Charges montables */
+  .loader { border: 2px solid var(--ink); padding: var(--s5); display: grid; gap: var(--s4); }
+  .stepper { display: flex; align-items: center; justify-content: space-between; gap: var(--s4); }
+  .stepper output { font: 700 clamp(2.75rem, 6vw, 4rem)/1 var(--hand); color: var(--marker); text-align: center; flex: 1; }
+  .stepper output small { font-size: 1.25rem; }
+  .btn { width: 56px; height: 56px; flex: none; border: 2px solid var(--ink); background: transparent; font: 600 2rem/1 var(--print); cursor: pointer; display: grid; place-items: center; }
+  .btn:hover { background: rgb(0 0 0 / .06); }
+  .btn:active { background: rgb(0 0 0 / .12); }
+  .btn:disabled { opacity: .3; cursor: not-allowed; }
+  .bar { width: 100%; height: auto; display: block; }
+  .per-side { text-align: center; font-size: 1.25rem; }
+  .strip { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .strip span { font: 700 1.0625rem/1 var(--hand); padding: var(--s2) var(--s3); border: 1.5px solid var(--ink); color: var(--marker); }
+  .strip .no { color: var(--muted); background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ink) calc(50% - .5px), var(--ink) calc(50% + .5px), transparent calc(50% + 1px)); }
+
+  /* Progression par crans */
+  .notches { width: 100%; border-collapse: collapse; }
+  .notches th, .notches td { border: 1.5px solid var(--ink); padding: var(--s2) var(--s3); text-align: left; }
+  .notches thead th { font: 700 .75rem/1.2 var(--print); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; }
+  .notches tbody th { width: 3.5em; font: 700 1.125rem var(--hand); }
+  .notches td:nth-child(2) { font: 700 1.1875rem/1.2 var(--hand); color: var(--marker); white-space: nowrap; }
+  .notches td:last-child { font-size: .9375rem; color: var(--ink-soft); }
+  .notches .up td:nth-child(2) { color: var(--change); }
+  .gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s4); padding: var(--s3) 0 0; font-weight: 600; }
+  .seg { display: inline-flex; border: 2px solid var(--ink); }
+  .seg label { position: relative; min-width: 64px; min-height: 44px; display: grid; place-items: center; padding: 0 var(--s4); cursor: pointer; font-weight: 700; }
+  .seg label + label { border-left: 2px solid var(--ink); }
+  .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .seg label:has(input:checked) { background: var(--ink); color: var(--blue); }
+  .seg label:has(input:focus-visible) { outline: 3px solid var(--marker); outline-offset: 2px; }
+
+  /* Point de forme */
+  .check { display: grid; gap: var(--s4); }
+  .check fieldset { border: 0; padding: 0; display: grid; grid-template-columns: 8.5em 1fr; align-items: center; gap: var(--s3); }
+  .check legend { float: left; font-weight: 700; padding: 0; }
+  .check .opts { display: flex; flex-wrap: wrap; gap: var(--s2); }
+  .check .opts label { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--s4); border: 2px solid var(--ink); cursor: pointer; font-weight: 600; }
+  .check .opts input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .check .opts label:has(input:checked) { background: var(--ink); color: var(--orange); }
+  .check .opts label:has(input:focus-visible) { outline: 3px solid var(--marker); outline-offset: 2px; }
+  .verdict { border-top: 2px solid var(--ink); padding-top: var(--s4); font: 700 clamp(1.5rem, 2.6vw, 2rem)/1.2 var(--hand); color: var(--marker); }
+  .verdict.light { color: var(--change); }
+
+  /* Captures agrafées */
+  .shots { position: relative; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--s3); }
+  .shot { position: relative; width: min(100%, 300px); flex: none; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 26px; outline: 2px solid var(--ink); outline-offset: -1px; background: #000; }
+  .shot::before { /* agrafe */
+    content: ""; position: absolute; z-index: 2; top: -6px; left: 50%; width: 46px; height: 7px; margin-left: -23px;
+    background: linear-gradient(var(--steel) 60%, #6c7077 0); border-radius: 2px;
+  }
+  .shots.pair .shot { width: min(48%, 280px); }
+  .shots.pair .shot + .shot { margin-left: -6%; margin-top: 72px; }
+  figcaption { margin-top: var(--s3); font-size: .875rem; color: var(--muted); text-align: center; }
+
+  /* Dernière carte */
+  .close { text-align: center; display: grid; justify-items: center; gap: var(--s4); padding-block: clamp(56px, 8vw, 104px); }
+  .close svg { width: 88px; height: 88px; border-radius: 20px; }
+  .close h2 { font-size: clamp(3rem, 8vw, 6rem); }
+  footer { max-width: 1360px; margin: 0 auto; padding: var(--s7) var(--gutter) var(--s6); color: var(--rack-ink); font-size: .875rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s3) var(--s6); }
+  footer a { color: #fff; text-underline-offset: 3px; }
+
+  /* ---------- Tablette ---------- */
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: minmax(0, 1fr); }
+    .gear, .sheet { grid-column: 1; grid-row: auto; }
+    .gear ul { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+    .feature, .feature.flip { grid-template-columns: minmax(0, 1fr); }
+    .feature.flip > :first-child { order: 0; }
+  }
+  /* ---------- Téléphone ---------- */
+  @media (max-width: 600px) {
+    body { font-size: 1rem; }
+    .card { padding: 40px 16px 28px; }
+    .stack > .card + .card { margin-top: -12px; }
+    .stack > .card:nth-child(odd) { margin-right: 10px; }
+    .stack > .card:nth-child(even) { margin-left: 10px; }
+    .head { flex-wrap: wrap; }
+    .fields { justify-content: flex-start; }
+    .gear ul { grid-template-columns: 1fr 1fr; gap: 0 var(--s3); }
+    .tick { font-size: .9375rem; gap: var(--s2); }
+    .sheet table, .sheet tbody { display: block; }
+    .sheet thead { display: block; }
+    .sheet thead tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr); }
+    .sheet thead th:first-child { display: none; }
+    .sheet tbody tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.3fr); }
+    .sheet tbody th { grid-column: 1 / -1; width: auto; border-top: 0; }
+    .sheet thead th { border-bottom: 0; }
+    .sheet td { border-top: 0; font-size: .9375rem; padding: var(--s2) 4px; white-space: normal; }
+    .sheet td.up span { padding: 0 .2em; border-width: 1.5px; }
+    .sheet thead th { padding-inline: 6px; }
+    .sheet th, .sheet td { margin: 0 0 0 -1.5px; }
+    .check fieldset { grid-template-columns: 1fr; gap: var(--s2); }
+    .loader { padding: var(--s4); }
+    .shots.pair .shot { width: 56%; }
+    .shots.pair .shot + .shot { margin-left: -12%; margin-top: 56px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#1c1c1e"/>
+    <rect x="14" y="39" width="72" height="5" rx="2.5" fill="#f5f5f7"/>
+    <rect x="21" y="27.5" width="9" height="28" rx="3" fill="#f5f5f7"/>
+    <rect x="70" y="27.5" width="9" height="28" rx="3" fill="#f5f5f7"/>
+    <rect x="31.5" y="32.5" width="5" height="18" rx="2" fill="#f5f5f7"/>
+    <rect x="63.5" y="32.5" width="5" height="18" rx="2" fill="#f5f5f7"/>
+    <rect x="27" y="66" width="46" height="11" rx="5.5" fill="#c8441d"/>
+    <rect x="43.3" y="68" width="1.4" height="7" rx=".7" fill="#1c1c1e" opacity=".55"/>
+    <rect x="55.3" y="68" width="1.4" height="7" rx=".7" fill="#1c1c1e" opacity=".55"/>
+    <circle cx="50" cy="71.5" r="3.6" fill="#f5f5f7"/>
+  </symbol>
+</svg>
+
+<main class="stack">
+
+  <!-- La fiche qui s'écrit avec ton matériel -->
+  <section class="card orange hero" aria-labelledby="h1">
+    <div class="head">
+      <div class="brand"><svg aria-hidden="true"><use href="#mark"/></svg>Steady</div>
+      <p class="fields printed"><span>Pour <b>toi</b></span><span>Lieu <b>chez toi</b></span><span>Appli <b>iPhone</b></span></p>
+    </div>
+
+    <div class="hero-text">
+      <h1 id="h1">Progresse sans te blesser.</h1>
+      <p class="lead">Steady écrit ton programme de musculation avec le matériel que tu as chez toi, puis le fait progresser prudemment : la technique d'abord, la charge ensuite.</p>
+    </div>
+
+    <fieldset class="gear">
+      <legend class="printed">Ton matériel</legend>
+      <ul>
+        <li><label class="tick"><input type="checkbox" value="smith" checked>Barre guidée et disques</label></li>
+        <li><label class="tick"><input type="checkbox" value="banc" checked>Banc inclinable</label></li>
+        <li><label class="tick"><input type="checkbox" value="halteres" checked>Haltères</label></li>
+        <li><label class="tick"><input type="checkbox" value="kettlebell">Kettlebell</label></li>
+        <li><label class="tick"><input type="checkbox" value="elastique">Élastiques</label></li>
+      </ul>
+      <p class="note">Coche, décoche : la séance se réécrit.</p>
+    </fieldset>
+
+    <div class="sheet">
+      <table>
+        <caption class="sr">Exemple de séance écrite par Steady selon le matériel coché, sur quatre semaines</caption>
+        <thead>
+          <tr>
+            <th scope="col">Exercice</th>
+            <th scope="col">Sem. 1<small>charge légère</small></th>
+            <th scope="col">Sem. 2<small>rép. × kg</small></th>
+            <th scope="col">Sem. 3<small>rép. × kg</small></th>
+            <th scope="col">Sem. 4<small>rép. × kg</small></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="sheet-foot"><span>Exemple de séance « corps entier », 3 séances par semaine.</span><span><span class="legend-up">Entouré</span> : ce qui progresse.</span></p>
+    </div>
+  </section>
+
+  <!-- Charges montables -->
+  <section class="card white feature" aria-labelledby="h-load">
+    <div class="copy">
+      <h2 id="h-load">Seulement des charges que tu peux monter.</h2>
+      <p>Steady connaît ta barre et tes disques. Il ne te demandera jamais 52 kg si tes disques ne le permettent pas, et il t'écrit quoi mettre de chaque côté.</p>
+      <ul class="rules">
+        <li><span>Barre guidée, haltères, kettlebell, élastiques, poids du corps.</span></li>
+        <li><span>Matériel modifiable à tout moment : un nouvel achat, et le programme s'adapte.</span></li>
+        <li><span>Gros saut de charge ? Les répétitions montent d'abord.</span></li>
+      </ul>
+    </div>
+    <div class="loader" aria-labelledby="h-load">
+      <div class="stepper">
+        <button class="btn" type="button" id="minus" aria-label="Charge inférieure"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 11h16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>
+        <output id="load" aria-live="polite">51,5 <small>kg</small></output>
+        <button class="btn" type="button" id="plus" aria-label="Charge supérieure"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 11h16M11 3v16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></button>
+      </div>
+      <svg class="bar" id="bar" viewBox="0 0 600 130" role="img" aria-label="Barre chargée"></svg>
+      <p class="per-side hand" id="side">De chaque côté : 10 + 5 + 1,25 kg</p>
+      <div>
+        <p class="printed" style="margin-bottom: var(--s2)">Autour de cette charge</p>
+        <p class="strip" id="strip"></p>
+      </div>
+      <p style="font-size:.875rem;color:var(--muted)">Exemple : barre guidée de 19 kg, disques de 1,25 à 20 kg.</p>
+    </div>
+  </section>
+
+  <!-- Technique avant la charge -->
+  <section class="card blue feature flip" aria-labelledby="h-tech">
+    <div class="copy">
+      <h2 id="h-tech">La technique avant la charge.</h2>
+      <p>Chaque nouvel exercice commence par deux séances légères pour apprendre le geste. Ensuite, on n'ajoute du poids que si la série était propre.</p>
+      <ul class="rules">
+        <li><span><b>Deux répétitions en réserve</b> sur les gros mouvements, à tous les niveaux.</span></li>
+        <li><span><b>Cycles de 5 semaines</b>, puis une semaine allégée.</span></li>
+        <li><span><b>Une douleur ?</b> L'exercice est remplacé, tu pourras le réintégrer plus tard.</span></li>
+        <li><span><b>Après une pause</b>, la reprise est allégée : 10 % de moins après deux semaines, 20 % après quatre.</span></li>
+      </ul>
+    </div>
+    <div>
+      <table class="notches">
+        <caption class="sr">Progression du squat à la Smith, séance après séance</caption>
+        <thead><tr><th scope="col">Séance</th><th scope="col">Écrit</th><th scope="col">Pourquoi</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1</th><td>10 × 29</td><td>Apprentissage 1 sur 2, charge légère</td></tr>
+          <tr><th scope="row">2</th><td>10 × 29</td><td>Apprentissage 2 sur 2</td></tr>
+          <tr><th scope="row">3</th><td>8 × 49</td><td>Première vraie charge</td></tr>
+          <tr><th scope="row">4</th><td>9 × 49</td><td>Une répétition de plus</td></tr>
+          <tr><th scope="row">5</th><td>10 × 49</td><td>Haut de la fourchette atteint</td></tr>
+          <tr id="next" class="up"><th scope="row">6</th><td>8 × 51,5</td><td>Technique propre : +2,5 kg</td></tr>
+        </tbody>
+      </table>
+      <div class="gate">
+        <span id="gate-q">Séance 5 : technique propre ?</span>
+        <span class="seg" role="radiogroup" aria-labelledby="gate-q">
+          <label><input type="radio" name="clean" value="1" checked>Oui</label>
+          <label><input type="radio" name="clean" value="0">Non</label>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Point de forme -->
+  <section class="card orange feature" aria-labelledby="h-form">
+    <div class="copy">
+      <h2 id="h-form">Un point de forme avant chaque séance.</h2>
+      <p>Trois questions, cinq secondes. Mal dormi, courbaturé, à plat : Steady garde les charges du jour ou allège la séance. Peu de temps ? Il propose une séance express.</p>
+    </div>
+    <form class="check" id="form" onsubmit="return false">
+      <fieldset><legend>Sommeil</legend><div class="opts">
+        <label><input type="radio" name="sleep" value="0" checked>Bien</label><label><input type="radio" name="sleep" value="1">Moyen</label><label><input type="radio" name="sleep" value="2">Mal</label>
+      </div></fieldset>
+      <fieldset><legend>Courbatures</legend><div class="opts">
+        <label><input type="radio" name="sore" value="0" checked>Aucune</label><label><input type="radio" name="sore" value="1">Un peu</label><label><input type="radio" name="sore" value="2">Fortes</label>
+      </div></fieldset>
+      <fieldset><legend>Énergie</legend><div class="opts">
+        <label><input type="radio" name="energy" value="0" checked>En forme</label><label><input type="radio" name="energy" value="1">Moyenne</label><label><input type="radio" name="energy" value="2">À plat</label>
+      </div></fieldset>
+      <p class="verdict" id="verdict" aria-live="polite">Séance normale, on peut progresser.</p>
+    </form>
+  </section>
+
+  <!-- Pendant la séance -->
+  <section class="card white feature flip" aria-labelledby="h-live">
+    <div class="copy">
+      <h2 id="h-live">Pendant la séance, ton iPhone fait le reste.</h2>
+      <p>Une série à la fois, en grand, avec la charge et les disques déjà calculés. Tu valides, le repos démarre.</p>
+      <ul class="rules">
+        <li><span><b>Repos minuté</b>, avec une notification même écran verrouillé.</span></li>
+        <li><span><b>Coach vocal</b>, et tu valides à la voix : « 10 répétitions validées ».</span></li>
+        <li><span><b>La caméra compte tes répétitions</b> et signale une descente trop rapide.</span></li>
+        <li><span><b>Sur ta télé</b> : la séance projetée, avec l'image de la caméra.</span></li>
+        <li><span><b>Échauffement guidé</b> selon les muscles du jour.</span></li>
+      </ul>
+    </div>
+    <figure class="shots">
+      <div class="shot"><img src="img/seance.webp" width="694" height="1500" loading="lazy" alt="Écran Séance de Steady : Squat à la Smith, série 2 sur 3, 10 répétitions, 51,5 kg au total, de chaque côté 10 + 5 + 1,25 kg, bouton Série faite."></div>
+    </figure>
+  </section>
+
+  <!-- Progrès -->
+  <section class="card blue feature" aria-labelledby="h-prog">
+    <div class="copy">
+      <h2 id="h-prog">Tes progrès, sans tableur.</h2>
+      <p>Chaque série est notée. Steady en tire ce qui compte, et te prévient quand quelque chose se déséquilibre.</p>
+      <ul class="rules">
+        <li><span><b>Courbes et records</b> par exercice.</span></li>
+        <li><span><b>Bilan de la semaine</b>, chaque dimanche soir.</span></li>
+        <li><span><b>Carte de récupération</b> : quels muscles sont encore fatigués.</span></li>
+        <li><span><b>Équilibre</b> : tu pousses plus que tu ne tires ? Le prochain cycle corrige.</span></li>
+      </ul>
+    </div>
+    <figure class="shots pair">
+      <div class="shot"><img src="img/progres.webp" width="694" height="1500" loading="lazy" alt="Écran Progrès : bilan de la semaine, records, charges en hausse et alerte d'équilibre poussée et tirage."></div>
+      <div class="shot"><img src="img/semaine.webp" width="694" height="1500" loading="lazy" alt="Écran Ma semaine : séances de la semaine et carte de récupération des muscles."></div>
+    </figure>
+  </section>
+
+  <!-- Données -->
+  <section class="card white feature" aria-labelledby="h-data">
+    <div class="copy">
+      <h2 id="h-data">Tout reste sur ton iPhone.</h2>
+      <p>Pas de compte, pas d'abonnement. Steady s'installe sur l'écran d'accueil depuis Safari et fonctionne sans réseau.</p>
+    </div>
+    <ul class="rules">
+      <li><span><b>52 exercices</b> choisis pour s'entraîner chez soi, avec consignes en français et schéma des muscles.</span></li>
+      <li><span><b>Hors ligne</b> : la salle au sous-sol ne capte pas ? Aucune importance.</span></li>
+      <li><span><b>Sauvegarde</b> de ton journal, et export quand tu veux.</span></li>
+    </ul>
+  </section>
+
+  <section class="card orange close" aria-labelledby="h-end">
+    <svg aria-hidden="true"><use href="#mark"/></svg>
+    <h2 id="h-end">Steady</h2>
+    <p class="lead">Progresse sans te blesser.</p>
+    <p class="note">Appli pour iPhone.</p>
+  </section>
+</main>
+
+<footer>
+  <p>Exercices, images et schémas des muscles : <a href="https://wger.de">wger</a>, licence CC BY-SA.</p>
+  <p>Captures : l'appli Steady, données de test.</p>
+</footer>
+
+<script>
+  // Séance d'exemple : pour chaque zone, le premier exercice dont le matériel est coché.
+  // Les charges de la barre guidée sont toutes montables (barre de 19 kg + paires de disques).
+  const ZONES = [
+    ['Jambes', [
+      [['smith'], 'Squat à la Smith', ['10 × 29', '8 × 49', '10 × 49', '8 × 51,5']],
+      [['halteres'], 'Fente arrière aux haltères', ['10 × 6', '10 × 10', '12 × 10', '12 · tempo 3 s']],
+      [['kettlebell'], 'Goblet squat', ['8 × 16', '10 × 16', '12 × 16', '12 · tempo 3 s']]]],
+    ['Arrière des cuisses', [
+      [['smith'], 'Hip thrust à la Smith', ['10 × 39', '10 × 59', '12 × 59', '10 × 61,5']],
+      [['halteres'], 'Soulevé de terre roumain aux haltères', ['10 × 6', '10 × 10', '12 × 10', '12 · pause 2 s']],
+      [['kettlebell'], 'Kettlebell swing', ['12 × 16', '15 × 16', '20 × 16', '20 · pause 1 s']],
+      [[], 'Pont fessier', ['12 rép.', '15 rép.', '20 rép.', '20 · tempo 3 s']]]],
+    ['Pectoraux', [
+      [['smith', 'banc'], 'Développé incliné à la Smith', ['10 × 29', '8 × 39', '10 × 39', '8 × 41,5']],
+      [['halteres', 'banc'], 'Développé couché aux haltères', ['10 × 6', '10 × 10', '12 × 10', '12 · tempo 3 s']],
+      [['halteres'], 'Développé au sol aux haltères', ['10 × 6', '10 × 10', '12 × 10', '12 · tempo 3 s']],
+      [[], 'Pompes', ['8 rép.', '10 rép.', '12 rép.', '12 · tempo 3 s']]]],
+    ['Dos', [
+      [['smith'], 'Rowing buste penché à la Smith', ['10 × 29', '10 × 39', '12 × 39', '10 × 41,5']],
+      [['halteres'], "Rowing à un bras à l'haltère", ['10 × 6', '10 × 10', '12 × 10', '12 · pause 2 s']],
+      [['elastique'], "Tirage vertical à l'élastique", ['12 · 10 kg', '12 · 20 kg', '15 · 20 kg', '12 · 30 kg']]]],
+    ['Épaules', [
+      [['smith', 'banc'], 'Développé épaules assis à la Smith', ['10 × 21,5', '8 × 26,5', '10 × 26,5', '8 × 29']],
+      [['halteres'], 'Développé épaules aux haltères', ['10 × 6', '8 × 8', '10 × 8', '8 × 10']],
+      [['elastique'], "Face pull à l'élastique", ['15 · 10 kg', '15 · 10 kg', '20 · 10 kg', '15 · 20 kg']],
+      [[], 'Pompes piquées', ['6 rép.', '8 rép.', '10 rép.', '10 · tempo 3 s']]]],
+    ['Abdos', [
+      [['elastique'], "Pallof press à l'élastique", ['12 · 10 kg', '12 · 10 kg', '15 · 10 kg', '12 · 20 kg']],
+      [[], 'Planche', ['30 s', '40 s', '50 s', '60 s']]]]
+  ];
+  const MISSING = { 'Jambes': 'Ajoute haltères ou kettlebell', 'Dos': 'Ajoute haltères ou élastiques' };
+  const rows = document.getElementById('rows');
+  const boxes = [...document.querySelectorAll('.gear input')];
+  let shown = [];
+
+  function render(animate) {
+    const have = new Set(boxes.filter(b => b.checked).map(b => b.value));
+    const picks = ZONES.map(([zone, opts]) => [zone, opts.find(([eq]) => eq.every(e => have.has(e)))]);
+    rows.replaceChildren(...picks.map(([zone, pick], i) => {
+      const tr = document.createElement('tr');
+      const name = pick ? pick[1] : null;
+      if (animate && name !== shown[i]) { tr.className = 'write'; tr.style.setProperty('--i', i); }
+      if (!pick) {
+        tr.classList.add('none');
+        tr.innerHTML = `<th scope="row" tabindex="0"><small>${zone}</small>${MISSING[zone]}</th>` + '<td></td>'.repeat(4);
+        tr.querySelectorAll('td').forEach(td => td.setAttribute('aria-label', 'rien avec ce matériel'));
+      } else {
+        tr.innerHTML = `<th scope="row" tabindex="0"><small>${zone}</small>${name}</th>` +
+          pick[2].map(w => w.replace(/ × /g, '\u00a0×\u00a0').replace(/(tempo|pause) /, '$1\u00a0').replace(/ (s|kg)$/, '\u00a0$1')).map((w, k) => k === 3 ? `<td class="up"><span>${w}</span></td>` : `<td>${w}</td>`).join('');
+      }
+      return tr;
+    }));
+    shown = picks.map(([, p]) => p ? p[1] : null);
+  }
+  boxes.forEach(b => b.addEventListener('change', () => render(true)));
+  render(false);
+
+  // Charges montables : barre de 19 kg, disques par côté, calcul glouton (chaque disque dépasse la somme des plus petits)
+  const BAR = 19, PLATES = [20, 20, 10, 5, 2.5, 1.25];
+  const fmt = n => String(n).replace('.', ',');
+  const perSide = total => {
+    let rest = (total - BAR) / 2; const used = [];
+    for (const p of PLATES) if (p <= rest + 1e-9) { used.push(p); rest -= p; }
+    return Math.abs(rest) < 1e-9 ? used : null;
+  };
+  const SIZES = { 20: [118, 24], 10: [96, 20], 5: [72, 16], 2.5: [56, 12], 1.25: [44, 10] };
+  let load = 51.5;
+  const loadOut = document.getElementById('load'), bar = document.getElementById('bar'), side = document.getElementById('side'), strip = document.getElementById('strip');
+  const minus = document.getElementById('minus'), plus = document.getElementById('plus');
+
+  function drawBar() {
+    const used = perSide(load);
+    let svg = '<rect x="8" y="61" width="584" height="8" rx="4" fill="#141414"/>' +
+              '<rect x="196" y="52" width="10" height="26" rx="2" fill="#141414"/><rect x="394" y="52" width="10" height="26" rx="2" fill="#141414"/>';
+    let l = 196, r = 404;
+    for (const p of used) {
+      const [h, w] = SIZES[p];
+      l -= w + 2;
+      svg += `<rect x="${l}" y="${65 - h / 2}" width="${w}" height="${h}" rx="3" fill="#141414"/>`;
+      svg += `<rect x="${r + 2}" y="${65 - h / 2}" width="${w}" height="${h}" rx="3" fill="#141414"/>`;
+      r += w + 2;
+    }
+    bar.innerHTML = svg;
+    bar.setAttribute('aria-label', `Barre chargée à ${fmt(load)} kg`);
+    loadOut.innerHTML = `${fmt(load)} <small>kg</small>`;
+    side.textContent = used.length ? `De chaque côté : ${used.map(fmt).join(' + ')} kg` : 'Barre seule';
+    const around = [];
+    for (let k = Math.floor(load) - 2; k <= Math.floor(load) + 3; k++) around.push(k);
+    around.splice(around.findIndex(k => k > load), 0, load);
+    strip.innerHTML = [...new Set(around)].map(k => perSide(k)
+      ? `<span>${fmt(k)}</span>` : `<span class="no" aria-label="${fmt(k)} kg impossible">${fmt(k)}</span>`).join('');
+    minus.disabled = load <= BAR; plus.disabled = load >= 136.5;
+  }
+  minus.onclick = () => { load -= 2.5; drawBar(); };
+  plus.onclick = () => { load += 2.5; drawBar(); };
+  drawBar();
+
+  // Technique propre ? Non : la charge reste
+  const next = document.getElementById('next');
+  document.querySelectorAll('input[name=clean]').forEach(i => i.addEventListener('change', () => {
+    const ok = i.value === '1';
+    next.className = ok ? 'up write' : 'write';
+    next.cells[1].textContent = ok ? '8 × 51,5' : '10 × 49';
+    next.cells[2].textContent = ok ? 'Technique propre : +2,5 kg' : 'Pas propre : on garde la charge';
+  }));
+
+  // Point de forme : 0-1 normal, 2-3 on garde les charges, 4 et plus séance allégée
+  const form = document.getElementById('form'), verdict = document.getElementById('verdict');
+  form.addEventListener('change', () => {
+    const score = ['sleep', 'sore', 'energy'].reduce((s, n) => s + +form.elements[n].value, 0);
+    verdict.className = 'verdict' + (score >= 4 ? ' light' : '');
+    verdict.textContent = score >= 4 ? 'Séance allégée aujourd’hui.' : score >= 2 ? 'On garde les charges aujourd’hui.' : 'Séance normale, on peut progresser.';
+  });
+</script>
+</body>
+</html>
