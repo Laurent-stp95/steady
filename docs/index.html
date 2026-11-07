@@ -72,7 +72,6 @@
   .brand svg { width: 44px; height: 44px; border-radius: 10px; flex: none; }
   .fields { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s5); justify-content: flex-end; }
   .fields span { display: inline-flex; align-items: baseline; gap: var(--s2); }
-  .fields b { font-family: var(--hand); font-weight: 700; color: var(--marker); font-size: 1.125rem; letter-spacing: 0; text-transform: none; border-bottom: 1px solid var(--ink); padding: 0 var(--s2); }
 
   /* ---------- Première carte : la fiche qui s'écrit ---------- */
   .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); gap: var(--s5) clamp(32px, 5vw, 72px); }
@@ -105,20 +104,28 @@
   .sheet tbody th small { display: block; font: 600 .6875rem/1.3 var(--print); font-stretch: 80%; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
   .sheet td { font: 700 1.1875rem/1.1 var(--hand); color: var(--marker); white-space: nowrap; }
   .sheet td.up { color: var(--change); }
-  .sheet td.up span { display: inline-block; padding: 0 .3em; border: 2px solid var(--change); border-radius: 50% 46% 52% 44% / 56% 50% 48% 52%; }
+  .circ { position: relative; display: inline-block; padding: 0 .35em; }
+  .circ svg { position: absolute; left: -4px; top: -5px; width: calc(100% + 8px); height: calc(100% + 10px); overflow: visible; fill: none; stroke: var(--change); stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 1; }
   .sheet tr.none td { background: linear-gradient(to top right, transparent calc(50% - 1px), var(--ink) calc(50% - .5px), var(--ink) calc(50% + .5px), transparent calc(50% + 1px)); }
   .sheet tr.none th { color: var(--muted); }
   .sheet tbody tr { transition: opacity .2s; }
   .sheet tbody:hover tr:not(:hover), .sheet tbody:has(:focus-visible) tr:not(:focus-within) { opacity: .4; } /* une ligne tenue à la fois */
   .write > * { animation: write .7s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--i, 0) * 70ms); }
-  @keyframes write { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  .write > * { animation-delay: calc(var(--i, 0) * 70ms + var(--c, 0) * 45ms); }
+  @keyframes write { from { clip-path: inset(-12px 100% -12px -12px); } to { clip-path: inset(-12px -12px -12px -12px); } }
+  .write .circ path { animation: trace .6s cubic-bezier(.65, 0, .35, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 380ms); }
+  @keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  /* Arrivée : les coches se tracent, puis la fiche s'écrit ligne par ligne */
+  .intro .gear input:checked::after { animation: write .35s cubic-bezier(.16, 1, .3, 1) both; animation-delay: calc(var(--k, 0) * 110ms + 150ms); }
+  .intro #rows .write > * { animation-delay: calc(var(--i, 0) * 110ms + var(--c, 0) * 45ms + 600ms); }
+  .intro #rows .write .circ path { animation-delay: calc(var(--i, 0) * 110ms + 1000ms); }
   .sheet-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s2) var(--s5); margin-top: var(--s3); font-size: .9375rem; color: var(--muted); }
   .legend-up { color: var(--change); font-family: var(--hand); font-weight: 700; }
 
   /* ---------- Cartes de fonctionnalités ---------- */
   .feature { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--s6) clamp(32px, 6vw, 96px); align-items: start; }
   .feature.flip { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); }
-  .feature.flip > :first-child { order: 2; }
+  .feature.flip > .copy { order: 2; }
   .copy { display: flex; flex-direction: column; gap: var(--s4); }
   .copy p { max-width: 34em; }
   .rules { display: grid; gap: var(--s3); margin-top: var(--s2); }
@@ -136,6 +143,11 @@
   .btn:active { background: rgb(0 0 0 / .12); }
   .btn:disabled { opacity: .3; cursor: not-allowed; }
   .bar { width: 100%; height: auto; display: block; }
+  .bar rect { fill: var(--ink); }
+  .bar .in { animation: plate-in .45s cubic-bezier(.16, 1, .3, 1) both; }
+  .bar .out { animation: plate-in .3s cubic-bezier(.7, 0, .84, 0) reverse both; }
+  .bar .l { --dx: -70px; } .bar .r { --dx: 70px; }
+  @keyframes plate-in { from { transform: translateX(var(--dx)); opacity: 0; } to { transform: none; opacity: 1; } }
   .per-side { text-align: center; font-size: 1.25rem; }
   .strip { display: flex; flex-wrap: wrap; gap: var(--s2); }
   .strip span { font: 700 1.0625rem/1 var(--hand); padding: var(--s2) var(--s3); border: 1.5px solid var(--ink); color: var(--marker); }
@@ -149,6 +161,9 @@
   .notches td:nth-child(2) { font: 700 1.1875rem/1.2 var(--hand); color: var(--marker); white-space: nowrap; }
   .notches td:last-child { font-size: .9375rem; color: var(--ink-soft); }
   .notches .up td:nth-child(2) { color: var(--change); }
+  .notches td.strike { position: relative; color: var(--muted); }
+  .notches td.strike::after { content: ""; position: absolute; left: 8px; right: 8px; top: 52%; height: 3px; border-radius: 2px; background: var(--change); transform-origin: left; animation: strike .35s cubic-bezier(.65, 0, .35, 1) both; }
+  @keyframes strike { from { transform: scaleX(0); } to { transform: none; } }
   .gate { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s4); padding: var(--s3) 0 0; font-weight: 600; }
   .seg { display: inline-flex; border: 2px solid var(--ink); }
   .seg label { position: relative; min-width: 64px; min-height: 44px; display: grid; place-items: center; padding: 0 var(--s4); cursor: pointer; font-weight: 700; }
@@ -167,7 +182,12 @@
   .check .opts label:has(input:checked) { background: var(--ink); color: var(--orange); }
   .check .opts label:has(input:focus-visible) { outline: 3px solid var(--marker); outline-offset: 2px; }
   .verdict { border-top: 2px solid var(--ink); padding-top: var(--s4); font: 700 clamp(1.5rem, 2.6vw, 2rem)/1.2 var(--hand); color: var(--marker); }
+  .verdict { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s3) var(--s5); }
   .verdict.light { color: var(--change); }
+  .stamp { display: inline-block; font: 800 1.375rem/1 var(--print); font-stretch: 75%; letter-spacing: .06em; text-transform: uppercase; color: var(--change); border: 3px solid currentColor; padding: 7px 12px 5px; transform: rotate(-7deg); }
+  .stamp[hidden] { display: none; }
+  .stamp.hit { animation: stamp .4s cubic-bezier(.16, 1, .3, 1) both; }
+  @keyframes stamp { from { opacity: 0; transform: rotate(-7deg) scale(1.15); } to { opacity: 1; transform: rotate(-7deg) scale(1); } }
 
   /* Captures agrafées */
   .shots { position: relative; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--s3); }
@@ -198,10 +218,50 @@
   .shot.wide::before { left: 24%; }
   .shot.wide::after { content: ""; position: absolute; z-index: 2; top: -6px; left: 76%; width: 46px; height: 7px; margin-left: -23px; background: linear-gradient(var(--steel) 60%, #6c7077 0); border-radius: 2px; }
 
+  /* Chrono vivant posé sur la capture de la télé */
+  .tv-live { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  .tv-arc { fill: none; stroke: #c8441d; stroke-width: 22.5; stroke-linecap: round; stroke-dasharray: 1; transition: stroke-dashoffset 1s linear; }
+  .tv-count { fill: #f5f5f7; font: 600 110.33px -apple-system, system-ui, "Segoe UI", Roboto, sans-serif; text-anchor: middle; dominant-baseline: central; font-variant-numeric: tabular-nums; }
+  /* Adresse écrite lettre par lettre */
+  .url a.typing span:not(.on) { opacity: 0; }
+
+  /* Pied de fiche imprimé : chaque carton a son formulaire */
+  .formfoot { grid-column: 1 / -1; order: 3; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2) var(--s5); padding-top: var(--s3); border-top: 2px solid var(--ink); }
+  .formfoot > span:first-child { font-weight: 800; }
+  .formfoot span { display: inline-flex; align-items: baseline; gap: var(--s2); }
+  .formfoot b, .fields b { font-family: var(--hand); font-weight: 700; color: var(--marker); font-size: 1.125rem; letter-spacing: 0; text-transform: none; border-bottom: 1px solid var(--ink); padding: 0 var(--s2); }
+
+  /* Encre tracée à l'apparition : courbe, cercle du record, cadenas */
+  .ink { fill: none; stroke: var(--marker); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
+  .motion [data-in] .ink { stroke-dashoffset: 1; }
+  [data-in].in .ink { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s cubic-bezier(.65, 0, .35, 1) var(--d, 0s); }
+  .curve { margin-top: var(--s3); }
+  .curve svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .curve .grid { stroke: var(--ink); stroke-opacity: .3; stroke-width: 1; }
+  .curve .axis { fill: var(--muted); font: 700 11px var(--print); font-stretch: 80%; letter-spacing: .06em; }
+  .curve .dot { fill: var(--marker); }
+  .curve .rec-loop { stroke: var(--change); stroke-width: 2.4; }
+  .curve .rec { fill: var(--change); font: 700 16px var(--hand); }
+  .curve figcaption { text-align: left; }
+  .vault { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s5); align-items: center; }
+  .lock { width: clamp(64px, 9vw, 96px); height: auto; overflow: visible; }
+  .lock .ink { stroke-width: 4; }
+  .lines div { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s1) var(--s3); padding: var(--s2) 0; border-bottom: 1.5px solid var(--ink); }
+  .lines dd { margin: 0; font: 700 clamp(1.25rem, 2vw, 1.5rem)/1.2 var(--hand); color: var(--marker); }
+
+  /* Les cartons se posent en recouvrant le précédent, au fil du défilement */
+  @supports (animation-timeline: view()) {
+    .stack > .card:not(.hero) { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% entry 55%; }
+    @keyframes settle { from { translate: 0 48px; } to { translate: 0 0; } }
+  }
+
   /* Dernière carte */
   .close { text-align: center; display: grid; justify-items: center; gap: var(--s4); padding-block: clamp(56px, 8vw, 104px); }
   .close svg { width: 88px; height: 88px; border-radius: 20px; }
   .close h2 { font-size: clamp(3rem, 8vw, 6rem); }
+  .close .stamp { margin: var(--s2) 0 var(--s3); color: var(--ink); }
+  .motion .close .stamp { opacity: 0; }
+  .close.in .stamp { animation: stamp .4s cubic-bezier(.16, 1, .3, 1) .3s both; }
 
   /* ---------- Tablette ---------- */
   @media (max-width: 960px) {
@@ -209,7 +269,7 @@
     .gear, .sheet { grid-column: 1; grid-row: auto; }
     .gear ul { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
     .feature, .feature.flip, .tv { grid-template-columns: minmax(0, 1fr); }
-    .feature.flip > :first-child { order: 0; }
+    .feature.flip > .copy { order: 0; }
   }
   /* ---------- Téléphone ---------- */
   @media (max-width: 600px) {
@@ -230,7 +290,7 @@
     .sheet tbody th { grid-column: 1 / -1; width: auto; border-top: 0; }
     .sheet thead th { border-bottom: 0; }
     .sheet td { border-top: 0; font-size: .9375rem; padding: var(--s2) 4px; white-space: normal; }
-    .sheet td.up span { padding: 0 .2em; border-width: 1.5px; }
+    .circ { padding: 0 .2em; }
     .sheet thead th { padding-inline: 6px; }
     .sheet th, .sheet td { margin: 0 0 0 -1.5px; }
     .check fieldset { grid-template-columns: 1fr; gap: var(--s2); }
@@ -326,8 +386,8 @@
         <p class="printed" style="margin-bottom: var(--s2)">Autour de cette charge</p>
         <p class="strip" id="strip"></p>
       </div>
-      <p style="font-size:.875rem;color:var(--muted)">Exemple : barre guidée de 19 kg, disques de 1,25 à 20 kg.</p>
     </div>
+    <p class="formfoot printed"><span>Bon de chargement, exemple</span><span>Barre <b>19 kg</b></span><span>Disques <b>1,25 à 20 kg</b></span></p>
   </section>
 
   <!-- Technique avant la charge -->
@@ -352,7 +412,7 @@
           <tr><th scope="row">3</th><td>8 × 49</td><td>Première vraie charge</td></tr>
           <tr><th scope="row">4</th><td>9 × 49</td><td>Une répétition de plus</td></tr>
           <tr><th scope="row">5</th><td>10 × 49</td><td>Haut de la fourchette atteint</td></tr>
-          <tr id="next" class="up"><th scope="row">6</th><td>8 × 51,5</td><td>Technique propre : +2,5 kg</td></tr>
+          <tr id="next" class="up"><th scope="row">6</th><td><span class="circ">8 × 51,5<svg viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M62 3C86 2 98 9 97 18C96 29 74 33 48 32C22 31 3 26 3 17C3 8 24 2 52 2C68 2 80 5 85 9"/></svg></span></td><td>Technique propre : +2,5 kg</td></tr>
         </tbody>
       </table>
       <div class="gate">
@@ -363,6 +423,7 @@
         </span>
       </div>
     </div>
+    <p class="formfoot printed"><span>Carnet de progression</span><span>Exercice <b>squat à la Smith</b></span><span>Fourchette <b>8 à 10 rép.</b></span></p>
   </section>
 
   <!-- Point de forme -->
@@ -381,8 +442,9 @@
       <fieldset><legend>Énergie</legend><div class="opts">
         <label><input type="radio" name="energy" value="0" checked>En forme</label><label><input type="radio" name="energy" value="1">Moyenne</label><label><input type="radio" name="energy" value="2">À plat</label>
       </div></fieldset>
-      <p class="verdict" id="verdict" aria-live="polite">Séance normale, on peut progresser.</p>
+      <p class="verdict" id="verdict" aria-live="polite"><span id="vtext">Séance normale, on peut progresser.</span><span class="stamp" id="stamp" aria-hidden="true" hidden>Allégée</span></p>
     </form>
+    <p class="formfoot printed"><span>Point de forme</span><span>Réponses <b>notées dans ton journal</b></span></p>
   </section>
 
   <!-- Pendant la séance -->
@@ -400,6 +462,7 @@
     <figure class="shots">
       <div class="shot"><img src="img/seance.webp" width="694" height="1500" loading="lazy" alt="Écran Séance de Steady : Squat à la Smith, série 2 sur 3, 10 répétitions, 51,5 kg au total, de chaque côté 10 + 5 + 1,25 kg, bouton Série faite."></div>
     </figure>
+    <p class="formfoot printed"><span>Fiche de séance</span><span>Validation <b>bouton, voix ou caméra</b></span><span>Écran <b>reste allumé</b></span></p>
   </section>
 
   <!-- Écran projeté -->
@@ -407,7 +470,7 @@
     <div class="copy">
       <h2 id="h-tv">Ta séance sur grand écran.</h2>
       <p>Steady se projette sur ta télé ou ton ordinateur, avec un simple navigateur. Une adresse, un code, et ta séance s'affiche en grand, chrono compris.</p>
-      <p class="url"><span class="printed">Adresse à ouvrir sur la télé</span><a href="https://laurent-stp95.github.io/muscu-auto/tv/">laurent-stp95.github.io/<wbr>muscu-auto/<wbr>tv</a></p>
+      <p class="url" data-in><span class="printed">Adresse à ouvrir sur la télé</span><a href="https://laurent-stp95.github.io/muscu-auto/tv/">laurent-stp95.github.io/<wbr>muscu-auto/<wbr>tv</a></p>
       <ol class="steps">
         <li><span>Ouvre cette adresse dans le navigateur de ta télé ou de ton ordinateur.</span></li>
         <li><span>Un code s'affiche : tape-le dans Steady, icône télé de Ma semaine.</span></li>
@@ -423,9 +486,10 @@
       <li><span><b>Rien à installer</b> sur la télé.</span></li>
     </ul>
     <figure class="screen">
-      <div class="shot wide"><img src="img/tv.webp" width="1920" height="1080" loading="lazy" alt="Écran projeté de Steady sur une télé : Squat à la Smith, images du mouvement et muscles travaillés, consignes, chrono de repos à 1:04, prochaine série 8 à 10 répétitions à 51,5 kg, de chaque côté 10 + 5 + 1,25 kg, série précédente marquée Record, exercice suivant."></div>
+      <div class="shot wide"><img src="img/tv.webp" width="1920" height="1080" loading="lazy" alt="Écran projeté de Steady sur une télé : Squat à la Smith, images du mouvement et muscles travaillés, consignes, chrono de repos qui défile, prochaine série 8 à 10 répétitions à 51,5 kg, de chaque côté 10 + 5 + 1,25 kg, série précédente marquée Record, exercice suivant."><svg class="tv-live" viewBox="0 0 1920 1080" aria-hidden="true"><circle class="tv-arc" cx="1445.1" cy="407.8" r="168.8" pathLength="1" transform="rotate(-90 1445.1 407.8)" style="stroke-dashoffset:.4667"/><text class="tv-count" x="1445.1" y="407.8">1:04</text></svg></div>
       <figcaption>Image du squat : Tierrasverdes, <a href="https://wger.de">wger</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr">CC BY-SA 4.0</a>. Schémas des muscles : <a href="https://wger.de">wger</a>, d'après <a href="https://commons.wikimedia.org/wiki/File:Muscular_system.svg">Wikimedia Commons</a>.</figcaption>
     </figure>
+    <p class="formfoot printed"><span>Fiche écran</span><span>Écran <b>télé ou ordinateur</b></span><span>Association <b>par code</b></span></p>
   </section>
 
   <!-- Progrès -->
@@ -439,12 +503,17 @@
         <li><span><b>Carte de récupération</b> : quels muscles sont encore fatigués.</span></li>
         <li><span><b>Équilibre</b> : tu pousses plus que tu ne tires ? Le prochain cycle corrige.</span></li>
       </ul>
+      <figure class="curve" data-in>
+        <svg viewBox="0 0 360 190" role="img" aria-label="Exemple de courbe : squat à la Smith, de 39 à 51,5 kg en 8 semaines, record la dernière semaine"><line class="grid" x1="40" x2="340" y1="125.0" y2="125.0"/><text class="axis" x="32" y="129.0" text-anchor="end">40</text><line class="grid" x1="40" x2="340" y1="90.0" y2="90.0"/><text class="axis" x="32" y="94.0" text-anchor="end">45</text><line class="grid" x1="40" x2="340" y1="55.0" y2="55.0"/><text class="axis" x="32" y="59.0" text-anchor="end">50</text><line class="grid" x1="40" x2="340" y1="20.0" y2="20.0"/><text class="axis" x="32" y="24.0" text-anchor="end">55</text><line class="grid" x1="40.0" x2="40.0" y1="20" y2="160"/><text class="axis" x="40.0" y="180" text-anchor="middle">S1</text><line class="grid" x1="82.9" x2="82.9" y1="20" y2="160"/><text class="axis" x="82.9" y="180" text-anchor="middle">S2</text><line class="grid" x1="125.7" x2="125.7" y1="20" y2="160"/><text class="axis" x="125.7" y="180" text-anchor="middle">S3</text><line class="grid" x1="168.6" x2="168.6" y1="20" y2="160"/><text class="axis" x="168.6" y="180" text-anchor="middle">S4</text><line class="grid" x1="211.4" x2="211.4" y1="20" y2="160"/><text class="axis" x="211.4" y="180" text-anchor="middle">S5</text><line class="grid" x1="254.3" x2="254.3" y1="20" y2="160"/><text class="axis" x="254.3" y="180" text-anchor="middle">S6</text><line class="grid" x1="297.1" x2="297.1" y1="20" y2="160"/><text class="axis" x="297.1" y="180" text-anchor="middle">S7</text><line class="grid" x1="340.0" x2="340.0" y1="20" y2="160"/><text class="axis" x="340.0" y="180" text-anchor="middle">S8</text><path class="ink" pathLength="1" d="M40.0 132.0 L82.9 114.5 L125.7 97.0 L168.6 97.0 L211.4 79.5 L254.3 62.0 L297.1 62.0 L340.0 44.5"/><circle class="dot" cx="40.0" cy="132.0" r="3.5"/><circle class="dot" cx="82.9" cy="114.5" r="3.5"/><circle class="dot" cx="125.7" cy="97.0" r="3.5"/><circle class="dot" cx="168.6" cy="97.0" r="3.5"/><circle class="dot" cx="211.4" cy="79.5" r="3.5"/><circle class="dot" cx="254.3" cy="62.0" r="3.5"/><circle class="dot" cx="297.1" cy="62.0" r="3.5"/><circle class="dot" cx="340.0" cy="44.5" r="3.5"/><path class="ink rec-loop" pathLength="1" style="--d:1.3s" d="M344.0 29.5C362.0 30.5 366.0 46.5 358.0 55.5C348.0 63.5 326.0 61.5 319.0 50.5C314.0 39.5 326.0 28.5 341.0 28.5C350.0 28.5 355.0 31.5 358.0 34.5"/><text class="rec" x="310.0" y="22.5" text-anchor="end">Record</text></svg>
+        <figcaption>Exemple : charge du squat à la Smith, semaine après semaine (kg).</figcaption>
+      </figure>
     </div>
     <figure class="shots pair">
       <div class="shot"><img src="img/progres.webp" width="694" height="1500" loading="lazy" alt="Écran Progrès : bilan de la semaine, records, charges en hausse et alerte d'équilibre poussée et tirage."></div>
       <div class="shot"><img src="img/semaine.webp" width="694" height="1500" loading="lazy" alt="Écran Ma semaine : séances de la semaine et carte de récupération des muscles."></div>
       <figcaption>Schémas des muscles : <a href="https://wger.de">wger</a>, d'après <a href="https://commons.wikimedia.org/wiki/File:Muscular_system.svg">Wikimedia Commons</a>.</figcaption>
     </figure>
+    <p class="formfoot printed"><span>Carnet de progrès</span><span>Bilan <b>dimanche 19 h</b></span><span>Records <b>notés</b></span></p>
   </section>
 
   <!-- Données -->
@@ -452,24 +521,37 @@
     <div class="copy">
       <h2 id="h-data">Tout reste sur ton iPhone.</h2>
       <p>Pas de compte, pas d'abonnement. Steady s'installe sur l'écran d'accueil depuis Safari et fonctionne sans réseau.</p>
+      <ul class="rules">
+        <li><span><b>52 exercices</b> choisis pour s'entraîner chez soi, avec consignes en français et schéma des muscles.</span></li>
+        <li><span><b>Hors ligne</b> : la salle au sous-sol ne capte pas ? Aucune importance.</span></li>
+        <li><span><b>Sauvegarde</b> de ton journal, et export quand tu veux.</span></li>
+      </ul>
     </div>
-    <ul class="rules">
-      <li><span><b>52 exercices</b> choisis pour s'entraîner chez soi, avec consignes en français et schéma des muscles.</span></li>
-      <li><span><b>Hors ligne</b> : la salle au sous-sol ne capte pas ? Aucune importance.</span></li>
-      <li><span><b>Sauvegarde</b> de ton journal, et export quand tu veux.</span></li>
-    </ul>
+    <div class="vault" data-in>
+      <svg class="lock" viewBox="0 0 80 100" aria-hidden="true"><path class="ink" pathLength="1" d="M21 46V31C21 17 29 9 40 9S59 17 59 31V46"/><path class="ink" pathLength="1" style="--d:.4s" d="M11 47C26 44 55 44 70 47C72 63 72 78 70 92C54 95 26 95 11 92C9 78 9 63 11 47Z"/><path class="ink" pathLength="1" style="--d:.9s" d="M40 63V76M40 63C37 63 35 61 35 58S37 53 40 53S45 55 45 58S43 63 40 63"/></svg>
+      <dl class="lines">
+        <div><dt class="printed">Compte</dt><dd>aucun</dd></div>
+        <div><dt class="printed">Réseau</dt><dd>pas besoin</dd></div>
+        <div><dt class="printed">Données</dt><dd>sur ton iPhone</dd></div>
+      </dl>
+    </div>
   </section>
 
-  <section class="card orange close" aria-labelledby="h-end">
+  <section class="card orange close" aria-labelledby="h-end" data-in>
     <svg aria-hidden="true"><use href="#mark"/></svg>
     <h2 id="h-end">Steady</h2>
     <p class="lead">Progresse sans te blesser.</p>
     <p class="note">Appli pour iPhone.</p>
+    <p class="stamp" aria-hidden="true">Séance terminée</p>
   </section>
 </main>
 
 
 <script>
+  const motion = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (motion) document.documentElement.classList.add('motion');
+  const CIRC = '<svg viewBox="0 0 100 34" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1" d="M62 3C86 2 98 9 97 18C96 29 74 33 48 32C22 31 3 26 3 17C3 8 24 2 52 2C68 2 80 5 85 9"/></svg>';
+
   // Séance d'exemple : pour chaque zone, le premier exercice dont le matériel est coché.
   // Les charges de la barre guidée sont toutes montables (barre de 19 kg + paires de disques).
   const ZONES = [
@@ -518,14 +600,18 @@
         tr.querySelectorAll('td').forEach(td => td.setAttribute('aria-label', 'rien avec ce matériel'));
       } else {
         tr.innerHTML = `<th scope="row" tabindex="0"><small>${zone}</small>${name}</th>` +
-          pick[2].map(w => w.replace(/ × /g, '\u00a0×\u00a0').replace(/(tempo|pause) /, '$1\u00a0').replace(/ (s|kg)$/, '\u00a0$1')).map((w, k) => k === 3 ? `<td class="up"><span>${w}</span></td>` : `<td>${w}</td>`).join('');
+          pick[2].map(w => w.replace(/ × /g, '\u00a0×\u00a0').replace(/(tempo|pause) /, '$1\u00a0').replace(/ (s|kg)$/, '\u00a0$1')).map((w, k) => k === 3 ? `<td class="up" style="--c:${k + 1}"><span class="circ">${w}${CIRC}</span></td>` : `<td style="--c:${k + 1}">${w}</td>`).join('');
       }
       return tr;
     }));
     shown = picks.map(([, p]) => p ? p[1] : null);
   }
   boxes.forEach(b => b.addEventListener('change', () => render(true)));
-  render(false);
+  // Arrivée : la fiche s'écrit une fois, puis chaque coche ne réécrit que les lignes qui changent
+  const hero = document.querySelector('.hero');
+  boxes.forEach((b, k) => b.style.setProperty('--k', k));
+  if (motion) { hero.classList.add('intro'); setTimeout(() => hero.classList.remove('intro'), 2600); }
+  render(motion);
 
   // Charges montables : barre de 19 kg, disques par côté, calcul glouton (chaque disque dépasse la somme des plus petits)
   const BAR = 19, PLATES = [20, 20, 10, 5, 2.5, 1.25];
@@ -540,19 +626,19 @@
   const loadOut = document.getElementById('load'), bar = document.getElementById('bar'), side = document.getElementById('side'), strip = document.getElementById('strip');
   const minus = document.getElementById('minus'), plus = document.getElementById('plus');
 
+  // Disques placés du manchon vers l'extérieur ; ceux qui changent glissent sur la barre ou en sortent
+  const place = list => { let l = 196, r = 404; return list.map(p => { const [h, w] = SIZES[p]; l -= w + 2; const o = { h, w, l, r: r + 2 }; r += w + 2; return o; }); };
+  const plate = (o, cls, k) => ['l', 'r'].map(side => `<rect class="${cls} ${side}" style="animation-delay:${k * 60}ms" x="${side === 'l' ? o.l : o.r}" y="${65 - o.h / 2}" width="${o.w}" height="${o.h}" rx="3"/>`).join('');
+  let prevUsed = null;
   function drawBar() {
     const used = perSide(load);
-    let svg = '<rect x="8" y="61" width="584" height="8" rx="4" fill="#141414"/>' +
-              '<rect x="196" y="52" width="10" height="26" rx="2" fill="#141414"/><rect x="394" y="52" width="10" height="26" rx="2" fill="#141414"/>';
-    let l = 196, r = 404;
-    for (const p of used) {
-      const [h, w] = SIZES[p];
-      l -= w + 2;
-      svg += `<rect x="${l}" y="${65 - h / 2}" width="${w}" height="${h}" rx="3" fill="#141414"/>`;
-      svg += `<rect x="${r + 2}" y="${65 - h / 2}" width="${w}" height="${h}" rx="3" fill="#141414"/>`;
-      r += w + 2;
-    }
-    bar.innerHTML = svg;
+    let keep = 0;
+    if (prevUsed) while (keep < used.length && keep < prevUsed.length && used[keep] === prevUsed[keep]) keep++;
+    else keep = used.length;
+    bar.innerHTML = '<rect x="8" y="61" width="584" height="8" rx="4"/><rect x="196" y="52" width="10" height="26" rx="2"/><rect x="394" y="52" width="10" height="26" rx="2"/>' +
+      place(used).map((o, i) => plate(o, i < keep ? '' : 'in', i - keep)).join('') +
+      (prevUsed ? place(prevUsed).slice(keep).map((o, i) => plate(o, 'out', i)).join('') : '');
+    prevUsed = used;
     bar.setAttribute('aria-label', `Barre chargée à ${fmt(load)} kg`);
     loadOut.innerHTML = `${fmt(load)} <small>kg</small>`;
     side.textContent = used.length ? `De chaque côté : ${used.map(fmt).join(' + ')} kg` : 'Barre seule';
@@ -570,19 +656,64 @@
   // Technique propre ? Non : la charge reste
   const next = document.getElementById('next');
   document.querySelectorAll('input[name=clean]').forEach(i => i.addEventListener('change', () => {
-    const ok = i.value === '1';
-    next.className = ok ? 'up write' : 'write';
-    next.cells[1].textContent = ok ? '8 × 51,5' : '10 × 49';
-    next.cells[2].textContent = ok ? 'Technique propre : +2,5 kg' : 'Pas propre : on garde la charge';
+    const ok = i.value === '1', [, cell, why] = next.cells;
+    clearTimeout(next.timer);
+    const write = () => {
+      cell.classList.remove('strike');
+      next.className = ok ? 'up write' : 'write';
+      cell.innerHTML = ok ? `<span class="circ">8\u00a0×\u00a051,5${CIRC}</span>` : '10\u00a0×\u00a049';
+      why.textContent = ok ? 'Technique propre\u00a0: +2,5 kg' : 'Pas propre\u00a0: on garde la charge';
+    };
+    // Non : la progression prévue est barrée au marqueur, puis la ligne est réécrite
+    if (!ok && motion) { next.className = ''; cell.classList.add('strike'); next.timer = setTimeout(write, 520); } else write();
   }));
 
   // Point de forme : 0-1 normal, 2-3 on garde les charges, 4 et plus séance allégée
   const form = document.getElementById('form'), verdict = document.getElementById('verdict');
   form.addEventListener('change', () => {
     const score = ['sleep', 'sore', 'energy'].reduce((s, n) => s + +form.elements[n].value, 0);
-    verdict.className = 'verdict' + (score >= 4 ? ' light' : '');
-    verdict.textContent = score >= 4 ? 'Séance allégée aujourd’hui.' : score >= 2 ? 'On garde les charges aujourd’hui.' : 'Séance normale, on peut progresser.';
+    const light = score >= 4, stamp = document.getElementById('stamp');
+    verdict.className = 'verdict' + (light ? ' light' : '');
+    if (light && stamp.hidden) { stamp.classList.remove('hit'); void stamp.offsetWidth; stamp.classList.add('hit'); }
+    stamp.hidden = !light;
+    document.getElementById('vtext').textContent = score >= 4 ? 'Séance allégée aujourd’hui.' : score >= 2 ? 'On garde les charges aujourd’hui.' : 'Séance normale, on peut progresser.';
   });
+
+  // Adresse de la télé : écrite lettre par lettre quand elle arrive à l'écran
+  const url = document.querySelector('.url a');
+  url.setAttribute('aria-label', url.textContent);
+  if (motion) {
+    [...url.childNodes].forEach(n => {
+      if (n.nodeType !== 3) return;
+      const frag = document.createDocumentFragment();
+      for (const ch of n.textContent) { const sp = document.createElement('span'); sp.textContent = ch; frag.append(sp); }
+      n.replaceWith(frag);
+    });
+  }
+
+  // Ce qui s'écrit à l'apparition : adresse, courbe, cadenas, tampon final
+  const seen = new IntersectionObserver(entries => entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in'); seen.unobserve(e.target);
+    if (motion && e.target.contains(url)) { // l'adresse s'écrit au marqueur, une lettre toutes les 40 ms
+      const chars = [...url.querySelectorAll('span')];
+      url.classList.add('typing');
+      chars.forEach((sp, k) => setTimeout(() => sp.classList.add('on'), 200 + k * 40));
+    }
+  }), { threshold: .4 });
+  document.querySelectorAll('[data-in]').forEach(el => seen.observe(el));
+
+  // Chrono de la télé : défile tant que la capture est visible (fixe à 1:04 si les animations sont réduites)
+  const arc = document.querySelector('.tv-arc'), count = document.querySelector('.tv-count'), TOTAL = 120;
+  let left = 64, clock = 0;
+  const showClock = () => { count.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0'); arc.style.strokeDashoffset = 1 - left / TOTAL; };
+  // 5 secondes à chaque passage, jamais de boucle (WCAG 2.2.2) ; s'arrête à 0:00
+  if (motion) new IntersectionObserver(([e]) => {
+    clearInterval(clock);
+    if (!e.isIntersecting) return;
+    let ticks = 0;
+    clock = setInterval(() => { if (left === 0 || ++ticks > 5) return clearInterval(clock); left--; showClock(); }, 1000);
+  }, { threshold: .5 }).observe(arc.closest('.shot'));
 </script>
 </body>
 </html>

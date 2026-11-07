@@ -34,7 +34,8 @@ Installed on the iPhone home screen from Safari (web app, not the App Store), wo
 - Session: one set at a time, auto rest timer, notifications screen locked, guided warm-up, express session, undo last set.
 - Voice coach and voice commands; camera that counts reps (MediaPipe, on device); TV screen projection with phone camera mirror.
 - Progress: charts, records, session history, weekly review, recovery map, push/pull balance, pain map. Backup and export.
-- The landing page is a showcase only: no link to the app, no install guide (decision 2026-11-07).
+- The landing page is a showcase: no link to the app itself and no install guide (decision 2026-11-07). Exception asked by the user the same day: the TV screen address (laurent-stp95.github.io/muscu-auto/tv/) is shown as a link with its 3 pairing steps, to show what the app can do.
+- Licence: screenshots showing wger images or muscle diagrams carry a CC BY-SA credit in their caption (user decision 2026-11-07). The "test data" mention was removed with the footer at the user's request.
 
 ## Brand Commitments
 

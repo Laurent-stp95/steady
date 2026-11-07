@@ -7,7 +7,7 @@ related_targets: []
 
 # Surface: docs/index.html (landing page Steady)
 
-Mode: Persuade. Audience: people training at home with their own equipment. Showcase only, no link to the app, no install guide (user decision). Action on page: tick your equipment and watch the session card rewrite itself. Proof: the mechanism demonstrated (program from equipment, mountable loads, cautious progression) and real app screens. No invented users, ratings, store badges.
+Mode: Persuade. Audience: people training at home with their own equipment. Showcase, no link to the app and no install guide (user decision), except the TV screen address shown as a link with its 3 pairing steps (user request, 2026-11-07). Action on page: tick your equipment and watch the session card rewrite itself. Proof: the mechanism demonstrated (program from equipment, mountable loads, cautious progression) and real app screens. No invented users, ratings, store badges.
 
 ## Direction contract
 
@@ -18,4 +18,4 @@ FIRST VIEWPORT: One large orange card fills the viewport inside the charcoal rac
 FORM: Training card, 4th of 7 grounded candidates; seed:a673555c13470750.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
 
-Signature interaction: ticking equipment rewrites the grid rows with a marker-stroke reveal. Motion grammar: ink writes in (clip reveal left to right), cards settle flat by overlap; nothing else moves. Raises: colour only marks change (cloud); depth by overlap only (papercut); one row held at a time on hover/focus dims the rest (detector); impossible loads as barred cells (VHS); progression advances by notches after « technique propre » (installer).
+Signature interaction: ticking equipment rewrites the grid rows with a marker-stroke reveal. Motion grammar: ink writes in (clip reveal, traced loops and strikes, the TV address written letter by letter), cards settle flat by overlap on scroll. Added at the user's request (« ajoute tous les lots », 2026-11-07): plates slide on and off the sleeve on +/−, a rubber stamp lands for a lighter session and on the closing card (ink, not change red), the TV capture's rest clock ticks 5 s per viewing and never loops. Nothing else moves; everything is off under reduced motion. Raises: colour only marks change (cloud); depth by overlap only (papercut); one row held at a time on hover/focus dims the rest (detector); impossible loads as barred cells (VHS); progression advances by notches after « technique propre » (installer).
